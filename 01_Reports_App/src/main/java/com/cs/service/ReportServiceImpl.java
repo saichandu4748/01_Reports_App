@@ -1,9 +1,7 @@
 package com.cs.service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
 import java.util.List;
-import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -12,13 +10,27 @@ import org.springframework.stereotype.Service;
 import com.cs.entity.CitizenPlan;
 import com.cs.repo.CitizenPlanRepository;
 import com.cs.request.SearchRequest;
+import com.cs.util.EmailUtils;
+import com.cs.util.ExcelGenerator;
+import com.cs.util.PdfGenerator;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class ReportServiceImpl implements IReportService {
 	
 	@Autowired
 	private CitizenPlanRepository planRepo;
-
+	
+	@Autowired
+	private ExcelGenerator excelGenerator;
+	
+	@Autowired
+	private PdfGenerator pdfGenerator;
+	
+	@Autowired
+	private EmailUtils emailUtils;
+	
 	@Override
 	public List<String> getPlanNames() {
 		//getting plan names list from repository
@@ -73,15 +85,24 @@ public class ReportServiceImpl implements IReportService {
 	}
 
 	@Override
-	public boolean ExportExcel() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean ExportExcel(HttpServletResponse response) throws Exception {
+		List<CitizenPlan> list = planRepo.findAll();
+		File f = new File("plans.xls");
+		excelGenerator.generateExcel(list, response,f);
+		emailUtils.sendEmail("Test Mail Subject", "<h1>hello sai we're looking for you</h1>", "20985a0277@raghuenggcollege.in",f);
+		f.delete();
+		return true;
 	}
 
 	@Override
-	public boolean ExportPdf() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean ExportPdf(HttpServletResponse response) throws Exception {
+		List<CitizenPlan> list = planRepo.findAll();
+		File file = new File("plans.pdf");
+		pdfGenerator.generate(response, list,file);
+		emailUtils.sendPDFEmail("Test Mail subject", "<h1>hurray! we're successful", "20985a0277@raghuenggcollege.in", file);
+		file.delete();
+		return true;
 	}
+
 
 }

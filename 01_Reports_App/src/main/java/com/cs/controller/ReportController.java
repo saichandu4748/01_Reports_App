@@ -13,6 +13,8 @@ import com.cs.entity.CitizenPlan;
 import com.cs.request.SearchRequest;
 import com.cs.service.IReportService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Controller
 public class ReportController {
 	
@@ -42,7 +44,21 @@ public class ReportController {
 		model.addAttribute("status", service.getplanStatuses());
 	}
 	
+	@GetMapping("/excel")
+	public void excelExport(HttpServletResponse res) throws Exception
+	{
+		res.setContentType("application/octet-stream");
+		res.addHeader("Content-Disposition", "attachment; filename=plans.xls");
+		service.ExportExcel(res);
+	}
 	
+	@GetMapping("/pdf")
+	public void pdfExport(HttpServletResponse res) throws Exception
+	{
+		res.setContentType("application/pdf");
+		res.addHeader("Content-Disposition", "attachment; filename=plans.pdf");
+		service.ExportPdf(res);
+	}
 }
 
 

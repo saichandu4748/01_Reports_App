@@ -85,7 +85,7 @@
 					<h5 style="color:red;text-align:center">No records found</h5>
 		</c:if>
 		<hr />
-		Export : <a href="">Excel</a> <a href="">PDF</a>
+		Export : <a href="excel">Excel</a> <a href="pdf">PDF</a>
 	</div>
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
